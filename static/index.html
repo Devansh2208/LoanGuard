@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🛡️ LoanGuard: AI-Powered Fraud Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a4f78;
+            --secondary-color: #5aa1d9;
+            --background-light: #f4f7fa;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-radius-lg: 16px;
+            --box-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
+            --danger-color: #c62828;
+            --success-color: #2e7d32;
+            --warning-color: #fbc02d;
+            --muted-text-color: #777;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            background: var(--card-background);
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-lg);
+            width: 850px;
+            max-width: 95%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .header-section {
+            margin-bottom: 30px;
+        }
+
+        .header-section h1 {
+            color: var(--primary-color);
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0 0 10px;
+            letter-spacing: -1px;
+        }
+
+        .header-section p {
+            font-size: 1.1rem;
+            color: var(--muted-text-color);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--muted-text-color);
+            transition: color 0.3s ease;
+        }
+
+        .step.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .step-icon {
+            font-size: 1.5rem;
+            color: #ddd;
+            transition: color 0.3s ease;
+        }
+
+        .step.active .step-icon {
+            color: var(--primary-color);
+        }
+
+        .step-label {
+            margin-top: 5px;
+        }
+
+        .section-card {
+            background: #f8faff;
+            border: 1px solid #e0e6ec;
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            margin-bottom: 25px;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-group p {
+            width: 100%;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin: 0 0 10px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background-color: #13395b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        button.btn-secondary {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+
+        button.btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px dashed #c0c0c0;
+            background: #fafafa;
+            padding: 40px 20px;
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            color: #777;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"]:hover {
+            border-color: var(--secondary-color);
+        }
+
+        input[type="file"]::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+
+        input[type="file"]::before {
+            content: '📁 Drag & Drop or Click to Select File';
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            outline: none;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-right: 15px;
+        }
+        
+        #progressContainer {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        #progressBar {
+            width: 100%;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        #progressFill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--secondary-color);
+            transition: width 0.4s ease-in-out;
+        }
+        
+        #uploadMessage {
+            margin-top: 20px;
+            display: none;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: var(--border-radius-lg);
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+        }
+
+        #ocrResult {
+            white-space: pre-wrap;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid #eee;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            color: #555;
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.03);
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            background-color: #ffe8e8;
+            color: var(--danger-color);
+            padding: 2px 4px;
+            border-radius: 4px;
+            display: block;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            margin-top: 20px;
+        }
+
+        #fraudScoreBox, #summaryBox {
+            background: #fff;
+            padding: 25px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid #d4e3f1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+       
+        
+        
+        #fraudScore.low-risk { color: var(--success-color); }
+        #fraudScore.medium-risk { color: var(--warning-color); }
+        #fraudScore.high-risk { color: var(--danger-color); }
+
+        #fraudFlags {
+            list-style: none;
+            padding-left: 0;
+            text-align: left;
+        }
+        
+        #fraudFlags li {
+            margin-bottom: 10px;
+            color: var(--danger-color);
+            background: #ffebeb;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+            border-left: 4px solid var(--danger-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #fraudFlags li i {
+            color: var(--danger-color);
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .card i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-section">
+        <h1>LoanGuard</h1>
+        <p>AI-Powered Loan Document Fraud Detection System</p>
+    </div>
+
+    <div class="step-indicators">
+        <div id="step1" class="step active">
+            <i class="fas fa-file-alt step-icon"></i>
+            <span class="step-label">1. Select Document</span>
+        </div>
+        <div id="step2" class="step">
+            <i class="fas fa-cloud-upload-alt step-icon"></i>
+            <span class="step-label">2. Upload File</span>
+        </div>
+        <div id="step3" class="step">
+            <i class="fas fa-search step-icon"></i>
+            <span class="step-label">3. Analyze Document</span>
+        </div>
+        <div id="step4" class="step">
+            <i class="fas fa-chart-line step-icon"></i>
+            <span class="step-label">4. View Results</span>
+        </div>
+    </div>
+    
+    <div id="selectSection" class="section-card">
+        <h3><i class="fas fa-file-check"></i> Select Document Type</h3>
+        <p>Choose the type of document you want to validate:</p>
+        <div class="btn-group">
+            <button onclick="selectType('bank')"><i class="fas fa-university"></i> Bank Statement</button>
+            <button onclick="selectType('dl_voter')"><i class="fas fa-id-card"></i> Driving License / Voter ID</button>
+            <button onclick="selectType('pan')"><i class="fas fa-id-card-alt"></i> PAN Card</button>
+        </div>
+    </div>
+
+    <div id="uploadSection" class="section-card" style="display:none;">
+        <h3><i class="fas fa-cloud-upload-alt"></i> Upload Document</h3>
+        <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" />
+        <button onclick="handleUpload()"><i class="fas fa-upload"></i> Upload</button>
+    </div>
+
+    <div id="analyzeSection" class="section-card" style="display:none;">
+        <h3><i class="fas fa-search-plus"></i> Initiate Analysis</h3>
+        <p>Your document has been uploaded successfully. Click below to start the fraud analysis.</p>
+        <button onclick="handleExtract()"><i class="fas fa-brain"></i> Analyze Document</button>
+        <div id="resultLink"></div>
+    </div>
+
+    <div id="progressContainer">
+        <div id="progressBar"><div id="progressFill"></div></div>
+    </div>
+    <div id="uploadMessage"></div>
+
+    <div id="resultsSection" style="display:none;">
+        <div id="ocrResult" class="section-card">
+            <h3><i class="fas fa-scroll"></i> Extracted Document Text (OCR)</h3>
+            </div>
+
+        <div class="results-grid">
+            <div id="fraudScoreBox" class="section-card">
+    <h3><i class="fas fa-shield-alt"></i> Detected Red Flags</h3>
+    <ul id="fraudFlags"></ul>
+    <button onclick="downloadPDF()" style="margin-top: 20px;"><i class="fas fa-file-download"></i> Export Fraud Report (PDF)</button>
+</div>
+
+            
+            <div id="summaryBox" class="section-card">
+                <h3><i class="fas fa-dollar-sign"></i> Financial Summary</h3>
+                <div id="summaryControls" class="btn-group">
+                    <button onclick="showSummary('credit')">💵 Credit</button>
+                    <button onclick="showSummary('debit')">💸 Debit</button>
+                </div>
+                <div id="creditBox" style="display:none;">
+                    <h4>Credit Summary</h4>
+                    <div class="card"><i class="fas fa-hand-holding-usd"></i> <span>Salary Received: ₹<span id="total_salary">0</span></span></div>
+                    <div class="card"><i class="fas fa-exchange-alt"></i> <span>UPI Received: ₹<span id="total_upi_credit">0</span></span></div>
+                    <div class="card"><i class="fas fa-piggy-bank"></i> <span>Other Credit: ₹<span id="total_credited">0</span></span></div>
+                </div>
+                <div id="debitBox" style="display:none;">
+                    <h4>Debit Summary</h4>
+                    <div class="card"><i class="fas fa-credit-card"></i> <span>EMI Paid: ₹<span id="total_emi">0</span></span></div>
+                    <div class="card"><i class="fas fa-money-bill-wave"></i> <span>ATM Withdrawals: ₹<span id="total_atm">0</span></span></div>
+                    <div class="card"><i class="fas fa-exchange-alt"></i> <span>UPI Paid: ₹<span id="total_upi_debit">0</span></span></div>
+                    <div class="card"><i class="fas fa-shopping-basket"></i> <span>Other Debit: ₹<span id="total_debited">0</span></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let uploadedFilename = "";
+    let selectedDocType = "";
+
+    function updateStep(stepNumber) {
+        document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+        document.getElementById(`step${stepNumber}`).classList.add('active');
+    }
+
+    function selectType(type) {
+        selectedDocType = type;
+        uploadedFilename = "";
+        document.getElementById("uploadSection").style.display = "block";
+        document.getElementById("analyzeSection").style.display = "none";
+        document.getElementById("resultsSection").style.display = "none";
+        document.getElementById("uploadMessage").style.display = "none";
+        updateStep(2);
+    }
+
+    async function handleUpload() {
+        const file = document.getElementById('fileInput').files[0];
+        if (!file) return showMsg("⚠️ Please select a file to upload.");
+        
+        showMsg("Uploading file...");
+        updateStep(2);
+
+        try {
+            const res = await fetch('/generate_presigned', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ filename: file.name })
+            });
+            const data = await res.json();
+            if (!data.url) throw new Error("Presigned URL not received");
+
+            uploadedFilename = file.name;
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", data.url, true);
+            xhr.setRequestHeader("Content-Type", "application/octet-stream");
+
+            xhr.upload.onprogress = e => {
+                if (e.lengthComputable) {
+                    document.getElementById("progressContainer").style.display = "block";
+                    document.getElementById("progressFill").style.width = (e.loaded / e.total * 100) + "%";
+                }
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    showMsg(`✅ File "${uploadedFilename}" uploaded successfully!`);
+                    document.getElementById("resultLink").innerHTML = `View file: <a href="${data.file_url}" target="_blank">${uploadedFilename}</a>`;
+                    document.getElementById("analyzeSection").style.display = "block";
+                    updateStep(3);
+                } else {
+                    showMsg("❌ Upload failed: " + xhr.status);
+                }
+            };
+
+            xhr.onerror = () => showMsg("❌ Upload error occurred.");
+            xhr.send(file);
+        } catch (err) {
+            showMsg("❌ Upload Error: " + err.message);
+        }
+    }
+
+    async function handleExtract() {
+        if (!uploadedFilename || !selectedDocType)
+            return showMsg("⚠️ Please select document type and upload a file first.");
+
+        showMsg("Analyzing document...");
+        updateStep(4);
+
+        try {
+            const res = await fetch('/extract_text', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ filename: uploadedFilename, doc_type: selectedDocType })
+            });
+            const data = await res.json();
+            if (!data.text) throw new Error("Extraction failed");
+
+            document.getElementById("resultsSection").style.display = "block";
+            
+            const ocrBox = document.getElementById("ocrResult");
+            ocrBox.innerHTML = "";
+            let relevantKeywords = [];
+            if (selectedDocType === 'dl_voter') relevantKeywords = ["DRIVING", "LICENSE", "VOTER", "ID", "DOB"];
+            else if (selectedDocType === 'pan') relevantKeywords = ["PAN", "INCOME TAX", "DOB"];
+            else relevantKeywords = [];
+            
+            const flaggedWords = data.fraud_flags?.map(f => f.toUpperCase()).filter(Boolean);
+
+            data.text.split('\n').forEach(line => {
+                const div = document.createElement('div');
+                div.className = flaggedWords.some(kw => line.toUpperCase().includes(kw)) ? 'highlight' : '';
+                div.textContent = line;
+                ocrBox.appendChild(div);
+            });
+
+            
+
+            const ul = document.getElementById("fraudFlags");
+            ul.innerHTML = "";
+            data.fraud_flags?.forEach(f => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${f}`;
+                ul.appendChild(li);
+            });
+
+            if (selectedDocType === 'bank' && data.summary) {
+                document.getElementById("summaryBox").style.display = "block";
+                document.getElementById("summaryControls").style.display = "block";
+
+                document.getElementById("total_credited").textContent = data.summary.total_credited;
+                document.getElementById("total_salary").textContent = data.summary.total_salary;
+                document.getElementById("total_upi_credit").textContent = data.summary.total_upi_credit || 0;
+
+                document.getElementById("total_debited").textContent = data.summary.total_debited;
+                document.getElementById("total_emi").textContent = data.summary.total_emi;
+                document.getElementById("total_atm").textContent = data.summary.total_atm;
+                document.getElementById("total_upi_debit").textContent = data.summary.total_upi_debit || 0;
+
+                showSummary('credit');
+            } else {
+                document.getElementById("summaryBox").style.display = "none";
+            }
+            showMsg("✅ Analysis complete!");
+
+        } catch (err) {
+            showMsg("❌ Error: " + err.message);
+        }
+    }
+    
+    function showSummary(type) {
+        const creditBox = document.getElementById("creditBox");
+        const debitBox = document.getElementById("debitBox");
+
+        if(type === 'credit') {
+            creditBox.style.display = "block";
+            debitBox.style.display = "none";
+        } else {
+            creditBox.style.display = "none";
+            debitBox.style.display = "block";
+        }
+    }
+
+    function showMsg(msg) {
+        const m = document.getElementById('uploadMessage');
+        m.style.display = 'block';
+        m.textContent = msg;
+    }
+    
+    async function downloadPDF() {
+        const body = {
+            filename: uploadedFilename,
+            doc_type: selectedDocType,
+            fraud_score: 0,
+            fraud_flags: Array.from(document.querySelectorAll("#fraudFlags li")).map(li => li.textContent.replace('⚠️', '').trim()),
+        };
+
+        if (selectedDocType === "bank") {
+            body.summary = {
+                total_credited: document.getElementById("total_credited").textContent,
+                total_salary: document.getElementById("total_salary").textContent,
+                total_upi_credit: document.getElementById("total_upi_credit").textContent,
+                total_debited: document.getElementById("total_debited").textContent,
+                total_emi: document.getElementById("total_emi").textContent,
+                total_atm: document.getElementById("total_atm").textContent,
+                total_upi_debit: document.getElementById("total_upi_debit").textContent,
+            };
+        }
+
+        const response = await fetch('/download_report', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            alert("Failed to download report.");
+            return;
+        }
+
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `LoanGuard_Fraud_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+        link.click();
+    }
+</script>
+</body>
+</html>

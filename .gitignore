@@ -1,0 +1,31 @@
+# ---- Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+instance/
+*.sqlite3
+
+# ---- Environment / Config ----
+.env
+*.pem
+*.key
+*.json
+config.py
+.aws/
+*.log
+
+# ---- IDE / Editor ----
+.vscode/
+.idea/
+*.iml
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Virtual Environment ----
+venv/
+env/
+.venv/
